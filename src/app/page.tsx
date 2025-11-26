@@ -1,15 +1,34 @@
-"use client";
+// src/app/page.tsx
+import { AuthButton } from "@/components/atoms/auth-button";
+import { ThemeSwitcher } from "@/components/atoms/theme-switcher";
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
-import { Button } from "@/components/atoms/Button";
-import { useRouter } from "next/navigation";
+export default async function Home() {
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getClaims();
+  const user = data?.claims;
 
-export default function Home() {
-  const router = useRouter();
+  // If no auth token/session → redirect to login
+  if (!user) {
+    redirect("/auth/login");
+  }
 
+  // If user exists → show dashboard
   return (
-    <div>
-      <Button onClick={() => router.push("/auth/login")}>Login</Button>
-      <Button onClick={() => router.push("/auth/sign-up")}>Sign Up</Button>
+    <div className="flex h-screen w-full flex-col">
+      <nav className="flex items-center justify-between border-b border-border px-6 py-4">
+        <h1 className="text-xl font-bold">Chat App</h1>
+        <div className="flex items-center gap-4">
+          <ThemeSwitcher />
+          <AuthButton />
+        </div>
+      </nav>
+
+      <main className="flex flex-1 flex-col items-center justify-center gap-6">
+        <h2 className="text-3xl font-bold">Welcome!</h2>
+        <p className="text-muted-foreground">You are logged in.</p>
+      </main>
     </div>
   );
 }
