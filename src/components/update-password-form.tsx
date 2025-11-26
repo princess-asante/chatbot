@@ -2,16 +2,16 @@
 
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
-import { Button } from "@/app/components/ui/button";
+import { Button } from "@/app/components/atoms/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/app/components/ui/card";
-import { Input } from "@/app/components/ui/input";
-import { Label } from "@/app/components/ui/label";
+} from "@/app/components/atoms/card";
+import { Input } from "@/app/components/atoms/input";
+import { Label } from "@/app/components/atoms/label";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 

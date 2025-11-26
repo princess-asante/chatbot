@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/app/components/ui/button";
+import { Button } from "@/app/components/atoms/button";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
