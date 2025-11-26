@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Button } from "../app/components/atoms/button";
+import { Button } from "./button";
 import { createClient } from "@/lib/supabase/server";
 import { LogoutButton } from "./logout-button";
 
