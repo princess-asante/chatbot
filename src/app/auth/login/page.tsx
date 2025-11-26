@@ -1,4 +1,4 @@
-import { LoginForm } from "@/app/components/atoms/login-form";
+import { LoginForm } from "@/components/atoms/login-form";
 
 export default function Page() {
   return (

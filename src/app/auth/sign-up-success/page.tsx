@@ -4,7 +4,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/app/components/atoms/card";
+} from "@/components/atoms/card";
 
 export default function Page() {
   return (

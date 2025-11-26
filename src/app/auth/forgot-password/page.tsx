@@ -1,4 +1,4 @@
-import { ForgotPasswordForm } from "@/app/components/atoms/forgot-password-form";
+import { ForgotPasswordForm } from "@/components/atoms/forgot-password-form";
 
 export default function Page() {
   return (

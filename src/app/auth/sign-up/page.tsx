@@ -1,4 +1,4 @@
-import { SignUpForm } from "@/app/components/atoms/sign-up-form";
+import { SignUpForm } from "@/components/atoms/sign-up-form";
 
 export default function Page() {
   return (
