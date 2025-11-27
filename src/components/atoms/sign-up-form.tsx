@@ -21,6 +21,7 @@ export function SignUpForm({
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
   const [email, setEmail] = useState("");
+  const [fname, setFname] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -40,7 +41,7 @@ export function SignUpForm({
     }
 
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -48,7 +49,23 @@ export function SignUpForm({
         },
       });
       if (error) throw error;
-      
+
+      console.log("Sign-up data:", data);
+
+
+
+        // Add user to your database
+      if (data.user) {
+        const { error: dbError } = await supabase
+          .from('users')
+          .insert({
+            supabase_id: data.user.id,
+            email: data.user.email,
+            created_at: data.user.created_at,
+          });
+        if (dbError) throw dbError;
+      }
+
       router.push("/auth/sign-up-success");
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred");
