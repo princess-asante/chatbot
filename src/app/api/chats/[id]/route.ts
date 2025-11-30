@@ -1,30 +1,16 @@
-import { createClient } from '@/lib/supabase/server';
+import { authenticateUser } from '@/lib/auth';
 
 export async function GET(
-  req: Request,
+  _req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const supabase = await createClient();
-  const { data: { user: authUser } } = await supabase.auth.getUser();
+  const auth = await authenticateUser();
 
-  if (!authUser) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-      status: 401,
-    });
+  if ('error' in auth) {
+    return new Response(JSON.stringify({ error: auth.error }), { status: auth.status });
   }
 
-  const { data: user } = await supabase
-    .from('users')
-    .select('id')
-    .eq('supabase_id', authUser.id)
-    .single();
-
-  if (!user) {
-    return new Response(JSON.stringify({ error: 'User not found' }), {
-      status: 404,
-    });
-  }
-
+  const { supabase, user } = auth;
   const { id } = await params;
 
   const { data: chat, error } = await supabase
@@ -53,27 +39,13 @@ export async function PATCH(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const supabase = await createClient();
-  const { data: { user: authUser } } = await supabase.auth.getUser();
+  const auth = await authenticateUser();
 
-  if (!authUser) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-      status: 401,
-    });
+  if ('error' in auth) {
+    return new Response(JSON.stringify({ error: auth.error }), { status: auth.status });
   }
 
-  const { data: user } = await supabase
-    .from('users')
-    .select('id')
-    .eq('supabase_id', authUser.id)
-    .single();
-
-  if (!user) {
-    return new Response(JSON.stringify({ error: 'User not found' }), {
-      status: 404,
-    });
-  }
-
+  const { supabase, user } = auth;
   const { id } = await params;
   const body = await req.json();
 
@@ -104,30 +76,16 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  req: Request,
+  _req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const supabase = await createClient();
-  const { data: { user: authUser } } = await supabase.auth.getUser();
+  const auth = await authenticateUser();
 
-  if (!authUser) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-      status: 401,
-    });
+  if ('error' in auth) {
+    return new Response(JSON.stringify({ error: auth.error }), { status: auth.status });
   }
 
-  const { data: user } = await supabase
-    .from('users')
-    .select('id')
-    .eq('supabase_id', authUser.id)
-    .single();
-
-  if (!user) {
-    return new Response(JSON.stringify({ error: 'User not found' }), {
-      status: 404,
-    });
-  }
-
+  const { supabase, user } = auth;
   const { id } = await params;
 
   const { error } = await supabase

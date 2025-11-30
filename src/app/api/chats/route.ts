@@ -1,22 +1,13 @@
-import { createClient } from '@/lib/supabase/server';
+import { authenticateUser } from '@/lib/auth';
 
 export async function POST(req: Request) {
-  const supabase = await createClient();
-  const { data: { user: authUser } } = await supabase.auth.getUser();
-  
-  if (!authUser) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+  const auth = await authenticateUser();
+
+  if ('error' in auth) {
+    return new Response(JSON.stringify({ error: auth.error }), { status: auth.status });
   }
 
-  const { data: user } = await supabase
-    .from('users')
-    .select('id')
-    .eq('supabase_id', authUser.id)
-    .single();
-
-  if (!user) {
-    return new Response(JSON.stringify({ error: 'User not found' }), { status: 404 });
-  }
+  const { supabase, user } = auth;
 
   const body = await req.json();
   const chatTitle = body.name ? body.name : 'Untitled Chat';
@@ -42,26 +33,13 @@ export async function POST(req: Request) {
 }
 
 export async function GET(req: Request) {
-  const supabase = await createClient();
-  const { data: { user: authUser } } = await supabase.auth.getUser();
+  const auth = await authenticateUser();
 
-  if (!authUser) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-      status: 401,
-    });
+  if ('error' in auth) {
+    return new Response(JSON.stringify({ error: auth.error }), { status: auth.status });
   }
 
-  const { data: user } = await supabase
-    .from('users')
-    .select('id')
-    .eq('supabase_id', authUser.id)
-    .single();
-
-  if (!user) {
-    return new Response(JSON.stringify({ error: 'User not found' }), {
-      status: 404,
-    });
-  }
+  const { supabase, user } = auth;
 
   const { data: chats, error } = await supabase
     .from('chats')
