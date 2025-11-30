@@ -1,14 +1,9 @@
 import { ChatPage } from "@/components/organisms/chat-page";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import type { PageProps } from "@/types";
 
-interface PageProps {
-  params: Promise<{
-    id: string;
-  }>;
-}
-
-export default async function Page({ params }: PageProps) {
+export default async function Page({ params }: PageProps<{ id: string }>) {
   const supabase = await createClient();
   const { data } = await supabase.auth.getClaims();
   const user = data?.claims;

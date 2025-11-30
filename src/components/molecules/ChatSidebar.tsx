@@ -5,14 +5,7 @@ import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import { Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 import { CreateChatInput } from "./CreateChatInput";
-
-interface Chat {
-  id: string;
-  chat_title: string;
-  created_at: string;
-  updated_at: string;
-  user_id: string;
-}
+import type { Chat, GetChatsResponse } from "@/types";
 
 export function ChatSidebar() {
   const [chats, setChats] = useState<Chat[]>([]);
@@ -28,9 +21,9 @@ export function ChatSidebar() {
     setIsLoading(true);
     try {
       const response = await fetch("/api/chats");
-      const data = await response.json();
+      const data: GetChatsResponse = await response.json();
 
-      if (!response.ok) throw new Error(data.error || "Failed to fetch chats");
+      if (!response.ok) throw new Error("Failed to fetch chats");
 
       setChats(data.chats || []);
     } catch (error) {

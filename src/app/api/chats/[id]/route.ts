@@ -1,4 +1,5 @@
 import { authenticateUser } from '@/lib/auth';
+import type { Chat, UpdateChatRequest, DeleteChatResponse } from '@/types';
 
 export async function GET(
   _req: Request,
@@ -32,7 +33,8 @@ export async function GET(
     });
   }
 
-  return new Response(JSON.stringify(chat), { status: 200 });
+  const response: Chat = chat;
+  return new Response(JSON.stringify(response), { status: 200 });
 }
 
 export async function PATCH(
@@ -47,7 +49,7 @@ export async function PATCH(
 
   const { supabase, user } = auth;
   const { id } = await params;
-  const body = await req.json();
+  const body: UpdateChatRequest = await req.json();
 
   const { data: chat, error } = await supabase
     .from('chats')
@@ -72,7 +74,8 @@ export async function PATCH(
     });
   }
 
-  return new Response(JSON.stringify(chat), { status: 200 });
+  const response: Chat = chat;
+  return new Response(JSON.stringify(response), { status: 200 });
 }
 
 export async function DELETE(
@@ -100,7 +103,8 @@ export async function DELETE(
     });
   }
 
-  return new Response(JSON.stringify({ message: 'Chat deleted successfully' }), {
+  const response: DeleteChatResponse = { message: 'Chat deleted successfully' };
+  return new Response(JSON.stringify(response), {
     status: 200,
   });
 }

@@ -1,5 +1,6 @@
 import { errorResponse } from '@/lib/api-response';
 import { authenticateUser } from '@/lib/auth';
+import type { CreateChatRequest, CreateChatResponse, GetChatsResponse } from '@/types';
 
 export async function POST(req: Request) {
   const auth = await authenticateUser();
@@ -10,7 +11,7 @@ export async function POST(req: Request) {
 
   const { supabase, user } = auth;
 
-  const body = await req.json();
+  const body: CreateChatRequest = await req.json();
   if (!body.name || typeof body.name !== 'string') {
     return errorResponse('Invalid chat name', 400);
   }
@@ -33,7 +34,8 @@ export async function POST(req: Request) {
     return new Response(JSON.stringify({ error: 'Failed to create chat' }), { status: 500 });
   }
 
-  return new Response(JSON.stringify(chat), { status: 201 });
+  const response: CreateChatResponse = chat;
+  return new Response(JSON.stringify(response), { status: 201 });
 }
 
 export async function GET(req: Request) {
@@ -57,6 +59,7 @@ export async function GET(req: Request) {
     });
   }
 
-  return new Response(JSON.stringify({ chats }), { status: 200 });
+  const response: GetChatsResponse = { chats: chats || [] };
+  return new Response(JSON.stringify(response), { status: 200 });
 }
 

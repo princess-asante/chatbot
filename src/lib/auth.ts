@@ -1,6 +1,11 @@
 import { createClient } from '@/lib/supabase/server';
+import type { AuthResult } from '@/types';
 
-export async function authenticateUser() {
+/**
+ * Authenticates the current user and retrieves their database record
+ * @returns AuthResult - Either successful auth with user data and Supabase client, or error with status
+ */
+export async function authenticateUser(): Promise<AuthResult> {
   const supabase = await createClient();
   const { data: { user: authUser } } = await supabase.auth.getUser();
 
@@ -13,7 +18,7 @@ export async function authenticateUser() {
 
   const { data: user } = await supabase
     .from('users')
-    .select('id')
+    .select('id, supabase_id, email, created_at')
     .eq('supabase_id', authUser.id)
     .single();
 

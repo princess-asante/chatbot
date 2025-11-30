@@ -1,10 +1,7 @@
 import { AuthButton } from "@/components/atoms/auth-button";
 import { ThemeSwitcher } from "@/components/atoms/theme-switcher";
 import { ChatSidebar } from "@/components/molecules/ChatSidebar";
-
-interface ChatPageProps {
-  chatId: string;
-}
+import type { ChatPageProps } from "@/types";
 
 export function ChatPage({ chatId }: ChatPageProps) {
   return (
