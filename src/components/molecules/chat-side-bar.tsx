@@ -1,0 +1,83 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
+interface Chat {
+  id: string;
+  chat_title: string;
+  created_at: string;
+  updated_at: string;
+  user_id: string;
+}
+
+export function ChatSideBar() {
+  const [chats, setChats] = useState<Chat[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    fetchChats();
+  }, []);
+
+  const fetchChats = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/chats");
+      const data = await response.json();
+
+      if (!response.ok) throw new Error(data.error || "Failed to fetch chats");
+
+      setChats(data.chats || []);
+    } catch (error) {
+      console.error("Error fetching chats:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleChatClick = (chatId: string) => {
+    router.push(`/chats/${chatId}`);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="w-64 h-screen sticky top-0 bg-gray-100 dark:bg-gray-900 border-r border-gray-300 dark:border-gray-700 p-4 overflow-y-auto">
+        <div className="text-sm text-gray-600 dark:text-gray-400">
+          Loading chats...
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-64 h-screen sticky top-0 bg-gray-100 dark:bg-gray-900 border-r border-gray-300 dark:border-gray-700 p-4 overflow-y-auto">
+      <h2 className="text-lg font-semibold mb-4 dark:text-gray-100">
+        Your Chats
+      </h2>
+      {chats.length === 0 ? (
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          No chats yet. Create one to get started!
+        </p>
+      ) : (
+        <ul className="space-y-2">
+          {chats.map((chat) => (
+            <li key={chat.id}>
+              <button
+                onClick={() => handleChatClick(chat.id)}
+                className="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
+              >
+                <div className="font-medium text-sm truncate dark:text-gray-100">
+                  {chat.chat_title}
+                </div>
+                <div className="text-xs text-gray-600 dark:text-gray-400">
+                  {new Date(chat.updated_at).toLocaleDateString()}
+                </div>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
