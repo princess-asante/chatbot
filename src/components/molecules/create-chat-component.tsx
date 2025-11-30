@@ -32,9 +32,7 @@ export function CreateChatComponent() {
         confirmButtonText: "Okay",
       });
 
-
-      // todo: navigate to the newly created chat when that route is ready
-      // router.push(`/chats/${data.id}`);
+      router.push(`/chats/${data.id}`);
     } catch (error) {
       console.error("Error creating chat:", error);
     } finally {
