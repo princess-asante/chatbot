@@ -18,12 +18,15 @@ export async function POST(req: Request) {
     return new Response(JSON.stringify({ error: 'User not found' }), { status: 404 });
   }
 
+  const body = await req.json();
+  const chatTitle = body.name ? body.name : 'Untitled Chat';
+
   // Create chat
   const { data: chat, error } = await supabase
     .from('chats')
     .insert({
       user_id: user.id,
-      chat_title: 'New Chat',
+      chat_title: chatTitle,
       created_at: new Date(),
       updated_at: new Date(),
     })
@@ -31,6 +34,7 @@ export async function POST(req: Request) {
     .single();
 
   if (error) {
+    console.log("Create chat error:", error.message);
     return new Response(JSON.stringify({ error: 'Failed to create chat' }), { status: 500 });
   }
 

@@ -53,7 +53,8 @@ export function SignUpForm({
       console.log("Sign-up data:", data);
 
 
-
+        // todo: add a first name field to the sighn-up process (to our db)
+        // delete user if they're entered multiple times with the same email
         // Add user to your database
       if (data.user) {
         const { error: dbError } = await supabase
