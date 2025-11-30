@@ -1,3 +1,4 @@
+import { errorResponse } from '@/lib/api-response';
 import { authenticateUser } from '@/lib/auth';
 
 export async function POST(req: Request) {
@@ -10,6 +11,9 @@ export async function POST(req: Request) {
   const { supabase, user } = auth;
 
   const body = await req.json();
+  if (!body.name || typeof body.name !== 'string') {
+    return errorResponse('Invalid chat name', 400);
+  }
   const chatTitle = body.name ? body.name : 'Untitled Chat';
 
   // Create chat

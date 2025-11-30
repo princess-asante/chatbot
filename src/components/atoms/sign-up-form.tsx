@@ -15,6 +15,7 @@ import { Label } from "@/components/atoms/label";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useFormState } from "@/hooks/useFormState";
 
 export function SignUpForm({
   className,
@@ -24,23 +25,19 @@ export function SignUpForm({
   const [fname, setFname] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const { isLoading, error, setError, handleSubmit } = useFormState();
   const router = useRouter();
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    const supabase = createClient();
-    setIsLoading(true);
-    setError(null);
 
     if (password !== repeatPassword) {
       setError("Passwords do not match");
-      setIsLoading(false);
       return;
     }
 
-    try {
+    await handleSubmit(async () => {
+      const supabase = createClient();
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -52,10 +49,9 @@ export function SignUpForm({
 
       console.log("Sign-up data:", data);
 
-
-        // todo: add a first name field to the sighn-up process (to our db)
-        // delete user if they're entered multiple times with the same email
-        // Add user to your database
+      // todo: add a first name field to the sighn-up process (to our db)
+      // delete user if they're entered multiple times with the same email
+      // Add user to your database
       if (data.user) {
         const { error: dbError } = await supabase
           .from('users')
@@ -68,11 +64,7 @@ export function SignUpForm({
       }
 
       router.push("/auth/sign-up-success");
-    } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred");
-    } finally {
-      setIsLoading(false);
-    }
+    });
   };
 
   return (

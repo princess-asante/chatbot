@@ -1,14 +1,12 @@
 import { AuthButton } from "@/components/atoms/auth-button";
 import { ThemeSwitcher } from "@/components/atoms/theme-switcher";
-import { ChatSideBar } from "@/components/molecules/chat-side-bar";
+import { ChatSidebar } from "@/components/molecules/ChatSidebar";
 
 interface ChatPageProps {
   chatId: string;
 }
 
 export function ChatPage({ chatId }: ChatPageProps) {
-
-
   return (
     <div className="flex h-screen w-full flex-col">
       <nav className="flex items-center justify-between border-b border-border px-6 py-4">
@@ -19,7 +17,7 @@ export function ChatPage({ chatId }: ChatPageProps) {
         </div>
       </nav>
       <div className="flex flex-1 overflow-hidden">
-        <ChatSideBar />
+        <ChatSidebar />
         <main className="flex flex-1 flex-col p-6">
           <div className="flex-1 overflow-y-auto">
             <p className="text-muted-foreground">Chat ID: {chatId}</p>

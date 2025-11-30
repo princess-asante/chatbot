@@ -1,7 +1,7 @@
 import { AuthButton } from "@/components/atoms/auth-button";
 import { ThemeSwitcher } from "@/components/atoms/theme-switcher";
-import { ChatSideBar } from "@/components/molecules/chat-side-bar";
-import { CreateChatComponent } from "@/components/molecules/create-chat-component";
+import { ChatSidebar } from "@/components/molecules/ChatSidebar";
+import { CreateChatInput } from "@/components/molecules/CreateChatInput";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
@@ -24,11 +24,11 @@ export default async function Home() {
         </div>
       </nav>
       <div className="flex flex-1 overflow-hidden">
-        <ChatSideBar />
+        <ChatSidebar />
         <main className="flex flex-1 flex-col items-center justify-center gap-6">
           <h2 className="text-3xl font-bold">Welcome!</h2>
           <p className="text-muted-foreground">You are logged in.</p>
-          <CreateChatComponent />
+          <CreateChatInput />
         </main>
       </div>
     </div>

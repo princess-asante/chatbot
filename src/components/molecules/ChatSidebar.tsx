@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import { Trash2, ChevronLeft, ChevronRight } from "lucide-react";
-import { CreateChatComponent } from "./create-chat-component";
+import { CreateChatInput } from "./CreateChatInput";
 
 interface Chat {
   id: string;
@@ -14,7 +14,7 @@ interface Chat {
   user_id: string;
 }
 
-export function ChatSideBar() {
+export function ChatSidebar() {
   const [chats, setChats] = useState<Chat[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -141,7 +141,7 @@ export function ChatSideBar() {
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     No chats yet. Create one to get started!
                   </p>
-                  <CreateChatComponent />
+                  <CreateChatInput />
                 </div>
               ) : (
                 <ul className="space-y-2">
