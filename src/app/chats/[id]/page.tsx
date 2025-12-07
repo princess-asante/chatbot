@@ -1,4 +1,4 @@
-import { ChatPage } from "@/components/organisms/chat-page";
+import { ChatPage } from "@/components/organisms/ChatPage/ChatPage";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import type { PageProps } from "@/types";

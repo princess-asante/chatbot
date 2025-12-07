@@ -3,9 +3,12 @@ import { ThemeSwitcher } from "@/components/atoms/theme-switcher";
 import { ChatSidebar } from "@/components/molecules/ChatSidebar/ChatSidebar";
 import type { ChatPageProps } from "@/types";
 import Link from "next/link";
-import { Navbar } from "../molecules/Navbar/Navbar";
+import { Navbar } from "../../molecules/Navbar/Navbar";
 
 export function ChatPage({ chatId }: ChatPageProps) {
+
+  
+
   return (
     <div className="flex h-screen w-full flex-col">
       <Navbar />
