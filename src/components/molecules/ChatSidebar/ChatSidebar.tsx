@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import { Trash2, ChevronLeft, ChevronRight } from "lucide-react";
-import { CreateChatInput } from "./CreateChatInput";
+import { CreateChatInput } from "../CreateChatInput/CreateChatInput";
 import type { Chat, GetChatsResponse } from "@/types";
 
 export function ChatSidebar() {

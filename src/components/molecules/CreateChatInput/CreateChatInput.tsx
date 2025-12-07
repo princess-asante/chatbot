@@ -3,8 +3,8 @@
 import { Button } from "@/components/atoms/Button";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Input } from "../atoms/input";
-import { Label } from "../atoms/label";
+import { Input } from "../../atoms/input";
+import { Label } from "../../atoms/label";
 import Swal from "sweetalert2";
 
 export function CreateChatInput() {
@@ -43,7 +43,6 @@ export function CreateChatInput() {
   return (
     <div className="space-y-4">
       <div className="grid gap-2">
-        <Label htmlFor="chatName">Chat Name</Label>
         <Input
           id="chatName"
           type="text"
@@ -52,10 +51,10 @@ export function CreateChatInput() {
           value={chatName}
           onChange={(e) => setChatName(e.target.value)}
         />
+        <Button onClick={handleCreateChat} disabled={isLoading}>
+          {isLoading ? "Creating..." : "Create New Chat"}
+        </Button>
       </div>
-      <Button onClick={handleCreateChat} disabled={isLoading}>
-        {isLoading ? "Creating..." : "Create New Chat"}
-      </Button>
     </div>
   );
 }
