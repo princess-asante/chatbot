@@ -38,7 +38,7 @@ export async function POST(req: Request) {
   return new Response(JSON.stringify(response), { status: 201 });
 }
 
-export async function GET(req: Request) {
+export async function GET(_req: Request) {
   const auth = await authenticateUser();
 
   if ('error' in auth) {
@@ -49,15 +49,34 @@ export async function GET(req: Request) {
 
   const { data: chats, error } = await supabase
     .from('chats')
-    .select('*')
+    .select(`
+      *,
+      messages (
+        *
+      )
+    `)
     .eq('user_id', user.id)
     .order('updated_at', { ascending: false });
 
   if (error) {
+    console.error('Error fetching chats:', error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
     });
   }
+
+  // Debug: Log the raw response
+  console.log('Chats fetched:', JSON.stringify(chats, null, 2));
+  console.log('Number of chats:', chats?.length);
+
+  // Debug: Check each chat's messages
+  chats?.forEach((chat: any, index: number) => {
+    console.log(`Chat ${index} (id: ${chat.id}):`, {
+      chat_title: chat.chat_title,
+      messages_count: chat.messages?.length || 0,
+      messages: chat.messages
+    });
+  });
 
   const response: GetChatsResponse = { chats: chats || [] };
   return new Response(JSON.stringify(response), { status: 200 });

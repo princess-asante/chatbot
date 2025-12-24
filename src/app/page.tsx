@@ -1,5 +1,3 @@
-import { AuthButton } from "@/components/atoms/auth-button";
-import { ThemeSwitcher } from "@/components/atoms/theme-switcher";
 import { ChatSidebar } from "@/components/molecules/ChatSidebar/ChatSidebar";
 import { CreateChatInput } from "@/components/molecules/CreateChatInput/CreateChatInput";
 import { Navbar } from "@/components/molecules/Navbar/Navbar";
@@ -17,7 +15,7 @@ export default async function Home() {
 
   return (
     <div className="flex h-screen w-full flex-col">
-      <Navbar />
+      <Navbar userEmail={user.email!} />
       <div className="flex flex-1 overflow-hidden">
         <ChatSidebar />
         <main className="flex flex-1 flex-col items-center justify-center gap-6">

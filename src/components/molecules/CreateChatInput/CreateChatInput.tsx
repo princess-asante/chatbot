@@ -4,10 +4,9 @@ import { Button } from "@/components/atoms/Button";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "../../atoms/input";
-import { Label } from "../../atoms/label";
 import Swal from "sweetalert2";
 
-export function CreateChatInput() {
+export const CreateChatInput = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [chatName, setChatName] = useState("");
   const router = useRouter();
@@ -57,4 +56,4 @@ export function CreateChatInput() {
       </div>
     </div>
   );
-}
+};

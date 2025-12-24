@@ -8,7 +8,7 @@
 // ============================================================================
 
 /**
- * Represents a chat conversation in the database
+ * Represents a chat conversation in the database, including its messages
  */
 export interface Chat {
   id: string;
@@ -16,6 +16,15 @@ export interface Chat {
   created_at: string;
   updated_at: string;
   user_id: string;
+  messages?: Message[]; // Added messages as an optional property
+}
+
+export interface Message {
+  id: string;
+  chat_id: string;
+  role: 'user' | 'bot';
+  content: string;
+  created_at: string;
 }
 
 /**
@@ -141,7 +150,8 @@ export type AuthResult = AuthSuccess | AuthError;
  * Props for the ChatPage component
  */
 export interface ChatPageProps {
-  chatId: string;
+  chat: Chat;
+  userEmail: string;
 }
 
 /**
