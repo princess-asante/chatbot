@@ -11,31 +11,25 @@ interface ChatPageProps {
 }
 
 export function ChatPage({ chat, userEmail }: ChatPageProps) {
-  const handleSendMessage = (message: string) => {
-    console.log("Message sent:", message);
+  const handleSendMessage = async (message: string) => {
+    try {
+      const response = await fetch(`/api/chats/${chat.id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message }),
+      });
 
-    const sendMessage = async (message: string) => {
-      try {
-        const response = await fetch(`/api/chats/${chat.id}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ message }),
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to send message");
-        }
-
-        const data = await response.json();
-        console.log("Message sent successfully:", data);
-      } catch (error) {
-        console.error("Error sending message:", error);
+      if (!response.ok) {
+        throw new Error("Failed to send message");
       }
-    };
 
-    sendMessage(message);
+      const data = await response.json();
+      console.log("Message sent successfully:", data);
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
   };
 
   return (

@@ -1,5 +1,4 @@
 import { authenticateUser } from '@/lib/auth';
-import { createClient } from "@/lib/supabase/server";
 import type { Chat, UpdateChatRequest, DeleteChatResponse } from '@/types';
 import { NextResponse } from "next/server";
 
@@ -17,16 +16,14 @@ export async function GET(
   const { id } = await params;
 
   const { data: chatWithMessages, error } = await supabase
-    .from('chats')
-    .select(`
+   .from("chats")
+    .select(
+      `
       *,
-      messages (
-        *
-      )
-    `)
-    .eq('id', id)
-    .eq('user_id', user.id)
-    .single();
+      messages:messages (*)
+    `
+    )
+    .eq("id", id);
 
   if (error) {
     return new Response(JSON.stringify({ error: error.message }), { status: 500 });
@@ -35,7 +32,6 @@ export async function GET(
   if (!chatWithMessages) {
     return new Response(JSON.stringify({ error: 'Chat not found' }), { status: 404 });
   }
-
 
   return new Response(JSON.stringify(chatWithMessages), { status: 200 });
 }
@@ -120,7 +116,6 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   }
 
   const { supabase } = auth;
-
   const { id } = await params;
 
   try {
@@ -131,7 +126,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       .insert({
         chat_id: id,
         content: message,
-        role: role, // Assuming "user" as the role for now
+        role: role || "user",
       });
 
     if (error) {
