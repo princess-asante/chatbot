@@ -18,6 +18,18 @@ export async function POST(
   const { id } = await params;
 
   try {
+    const { data: chatHistory, historyError } = await supabase
+      .from("chats")
+      .select(
+        `
+      *,
+      messages:messages (*)
+    `
+      )
+      .eq("id", id);
+
+    console.log("Chat with messages:", chatHistory);
+
     const { message, role } = await req.json();
     const ai = new GoogleGenAI({});
 

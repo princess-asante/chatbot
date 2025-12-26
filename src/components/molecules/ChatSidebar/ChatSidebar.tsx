@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Swal from "sweetalert2";
 import { Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 import { CreateChatInput } from "../CreateChatInput/CreateChatInput";
@@ -12,6 +12,7 @@ export function ChatSidebar() {
   const [isLoading, setIsLoading] = useState(true);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     fetchChats();
@@ -74,8 +75,14 @@ export function ChatSidebar() {
           showConfirmButton: false,
         });
 
-        // Refresh the sidebar
-        fetchChats();
+        // Check if the deleted chat is the current one
+        const currentChatId = pathname?.split("/chats/")[1]?.split("?")[0];
+
+        if (currentChatId && String(currentChatId) === String(chatId)) {
+          router.push("/");
+        } else {
+          fetchChats();
+        }
       } catch (error) {
         console.error("Error deleting chat:", error);
         Swal.fire({
