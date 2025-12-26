@@ -5,6 +5,7 @@ import type { Chat } from "@/types";
 import { Navbar } from "../../molecules/Navbar/Navbar";
 import { SendMessageInput } from "@/components/molecules/SendMessageInput/SendMessageInput";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 interface ChatPageProps {
   chat: Chat;
@@ -13,20 +14,17 @@ interface ChatPageProps {
 
 export function ChatPage({ chat, userEmail }: ChatPageProps) {
   const router = useRouter();
+  const [streamingMessage, setStreamingMessage] = useState(""); // Add this
 
   const handleSendMessage = async (message: string) => {
     try {
-      const response = await fetch(`/api/chats/${chat.id}`, {
+      await fetch(`/api/chats/${chat.id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ message }),
       });
-
-      if (!response.ok) {
-        throw new Error("Failed to send message");
-      }
 
       const botResponse = await fetch(`/api/chats/${chat.id}/stream`, {
         method: "POST",
@@ -43,18 +41,23 @@ export function ChatPage({ chat, userEmail }: ChatPageProps) {
       // If it's a streaming response, we need to consume it
       if (botResponse.body) {
         const reader = botResponse.body.getReader();
+        const decoder = new TextDecoder();
+
+        setStreamingMessage("");
+
         while (true) {
-          const { done } = await reader.read();
+          const { done, value } = await reader.read();
           if (done) break;
+
+          const chunk = decoder.decode(value);
+          setStreamingMessage((prev) => prev + chunk);
         }
+        setStreamingMessage("");
+        router.refresh();
       }
     } catch (error) {
+      
       console.error("Error sending message:", error);
-    } finally {
-      // Use a small delay to ensure DB writes have completed
-      setTimeout(() => {
-        router.refresh();
-      }, 500);
     }
   };
 
@@ -72,6 +75,12 @@ export function ChatPage({ chat, userEmail }: ChatPageProps) {
                   <strong>{message.role}:</strong> {message.content}
                 </li>
               ))}
+              {/* Show streaming message */}
+              {streamingMessage && (
+                <li>
+                  <strong>bot:</strong> {streamingMessage}
+                </li>
+              )}
             </ul>
           </div>
           <SendMessageInput onSend={handleSendMessage} />
