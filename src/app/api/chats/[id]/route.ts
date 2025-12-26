@@ -2,6 +2,7 @@ import { authenticateUser } from '@/lib/auth';
 import type { Chat, UpdateChatRequest, DeleteChatResponse } from '@/types';
 import { NextResponse } from "next/server";
 
+// todo: get the page to use this API route instead of direct supabase calls
 export async function GET(
   _req: Request,
   { params }: { params: Promise<{ id: string }> }

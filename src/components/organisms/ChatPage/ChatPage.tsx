@@ -28,12 +28,33 @@ export function ChatPage({ chat, userEmail }: ChatPageProps) {
         throw new Error("Failed to send message");
       }
 
-      const data = await response.json();
-      console.log("Message sent successfully:", data);
+      const botResponse = await fetch(`/api/chats/${chat.id}/stream`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message, role: "bot" }),
+      });
 
-      router.refresh();
+      if (!botResponse.ok) {
+        throw new Error("Failed to get bot response");
+      }
+
+      // If it's a streaming response, we need to consume it
+      if (botResponse.body) {
+        const reader = botResponse.body.getReader();
+        while (true) {
+          const { done } = await reader.read();
+          if (done) break;
+        }
+      }
     } catch (error) {
       console.error("Error sending message:", error);
+    } finally {
+      // Use a small delay to ensure DB writes have completed
+      setTimeout(() => {
+        router.refresh();
+      }, 500);
     }
   };
 
