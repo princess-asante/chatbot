@@ -14,7 +14,8 @@ export default async function Page({ params }: PageProps<{ id: string }>) {
 
   const { id } = await params;
 
-  // Fetch chat data on the server
+  // todo: convert this to use the API.
+  // todo: work on the AI chatpt response handling
   const { data: chatData, error } = await supabase
     .from("chats")
     .select(

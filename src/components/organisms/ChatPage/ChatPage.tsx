@@ -4,6 +4,7 @@ import { ChatSidebar } from "@/components/molecules/ChatSidebar/ChatSidebar";
 import type { Chat } from "@/types";
 import { Navbar } from "../../molecules/Navbar/Navbar";
 import { SendMessageInput } from "@/components/molecules/SendMessageInput/SendMessageInput";
+import { useRouter } from "next/navigation";
 
 interface ChatPageProps {
   chat: Chat;
@@ -11,6 +12,8 @@ interface ChatPageProps {
 }
 
 export function ChatPage({ chat, userEmail }: ChatPageProps) {
+  const router = useRouter();
+
   const handleSendMessage = async (message: string) => {
     try {
       const response = await fetch(`/api/chats/${chat.id}`, {
@@ -27,6 +30,8 @@ export function ChatPage({ chat, userEmail }: ChatPageProps) {
 
       const data = await response.json();
       console.log("Message sent successfully:", data);
+
+      router.refresh();
     } catch (error) {
       console.error("Error sending message:", error);
     }
