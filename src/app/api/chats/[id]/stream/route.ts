@@ -1,6 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
 import { authenticateUser } from "@/lib/auth";
-import { NextResponse } from "next/server";
+import type { Message } from "@/types";
 
 export async function POST(
   req: Request,
@@ -18,43 +18,58 @@ export async function POST(
   const { id } = await params;
 
   try {
-    const { data: chatHistory, historyError } = await supabase
+    const { data: chatHistory } = await supabase
       .from("chats")
-      .select(
-        `
-      *,
-      messages:messages (*)
-    `
-      )
+      .select(`*, messages:messages (*)`)
       .eq("id", id);
 
-    console.log("Chat with messages:", chatHistory);
+    const formattedHistory = chatHistory[0].messages.map((msg: Message) => ({
+      role: msg.role === "bot" ? "model" : "user",
+      parts: [{ text: msg.content }],
+    }));
 
-    const { message, role } = await req.json();
+    const { message } = await req.json();
     const ai = new GoogleGenAI({});
 
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: message,
+    const chat = ai.chats.create({
+      model: "gemini-2.5-flash-lite",
+      history: formattedHistory,
     });
 
-    console.log("AI Response:", response.text);
-
-    const { data, error } = await supabase.from("messages").insert({
-      chat_id: id,
-      content: response?.text,
-      role: role || "bot",
+    const aiStream = await chat.sendMessageStream({
+      message: message,
     });
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 });
-    }
+    const encoder = new TextEncoder();
+    let fullResponse = "";
 
-    return NextResponse.json({ message: "Message added successfully", data });
+    const stream = new ReadableStream({
+      async start(controller) {
+        try {
+          for await (const chunk of aiStream) {
+            fullResponse += chunk.text;
+            controller.enqueue(encoder.encode(chunk.text));
+          }
+
+          await supabase.from("messages").insert({
+            chat_id: id,
+            content: fullResponse,
+            role: "bot",
+          });
+
+          controller.close();
+        } catch (error) {
+          return new Response(JSON.stringify({ error: "Failed to stream" }), {
+            status: 500,
+          });
+        }
+      },
+    });
+
+    return new Response(stream);
   } catch (error) {
-    return NextResponse.json(
-      { error: "Failed to add message" },
-      { status: 500 }
-    );
+    return new Response(JSON.stringify({ error: "Failed to stream" }), {
+      status: 500,
+    });
   }
 }
