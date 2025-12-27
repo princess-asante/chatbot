@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/atoms/Button";
+import { Button } from "@/components/atoms/button";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "../../atoms/input";

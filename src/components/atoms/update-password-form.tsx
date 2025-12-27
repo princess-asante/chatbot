@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
-import { Button } from "@/components/atoms/Button";
+import { Button } from "@/components/atoms/button";
 import {
   Card,
   CardContent,
