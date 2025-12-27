@@ -9,11 +9,35 @@ const ai = new GoogleGenAI({
 });
 
 async function main() {
-  const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash",
-    contents: "What is the capital of France?",
+  const chat = ai.chats.create({
+    model: "gemini-2.5-flash-lite",
+    history: [
+      {
+        role: "user",
+        parts: [{ text: "Hello" }],
+      },
+      {
+        role: "model",
+        parts: [{ text: "Great to meet you. What would you like to know?" }],
+      },
+    ],
   });
-  console.log(response.text);
+
+  const stream1 = await chat.sendMessageStream({
+    message: "I have 2 dogs in my house.",
+  });
+  for await (const chunk of stream1) {
+    console.log(chunk.text);
+    console.log("_".repeat(80));
+  }
+
+  const stream2 = await chat.sendMessageStream({
+    message: "How many paws are in my house?",
+  });
+  for await (const chunk of stream2) {
+    console.log(chunk.text);
+    console.log("_".repeat(80));
+  }
 }
 
-main();
+main().catch(console.error);

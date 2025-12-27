@@ -133,7 +133,7 @@ export function ChatSidebar() {
             </div>
           ) : (
             <>
-              <h2 className="text-lg font-semibold mb-4 dark:text-gray-100">
+              <h2 className="text-lg font-semibold mb-2 px-3 dark:text-gray-100">
                 Your Chats
               </h2>
               {chats.length === 0 ? (
