@@ -1,5 +1,4 @@
-import { UpdatePasswordForm } from "@/app/components/atoms/update-password-form";
-
+import { UpdatePasswordForm } from "@/components/atoms/update-password-form";
 export default function Page() {
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">

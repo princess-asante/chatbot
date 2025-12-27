@@ -3,6 +3,9 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import type { PageProps, Chat } from "@/types";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function Page({ params }: PageProps<{ id: string }>) {
   const supabase = await createClient();
   const { data } = await supabase.auth.getClaims();
