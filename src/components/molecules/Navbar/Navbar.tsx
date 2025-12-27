@@ -19,7 +19,7 @@ export function Navbar({ userEmail }: NavbarProps) {
       <div className="flex items-center gap-4">
         <ThemeSwitcher />
         <div className="flex items-center gap-4">
-          Hey, {userEmail}!
+          <span className="hidden md:inline">Hey, {userEmail}!</span>
           <LogoutButton />
         </div>
       </div>
