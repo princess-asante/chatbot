@@ -56,7 +56,6 @@ export function ChatPage({ chat, userEmail }: ChatPageProps) {
         router.refresh();
       }
     } catch (error) {
-      
       console.error("Error sending message:", error);
     }
   };
@@ -67,21 +66,36 @@ export function ChatPage({ chat, userEmail }: ChatPageProps) {
       <div className="flex flex-1 overflow-hidden">
         <ChatSidebar />
         <main className="flex flex-1 flex-col p-6">
-          <div className="flex-1 overflow-y-auto">
-            <h1 className="text-xl font-bold">{chat.chat_title}</h1>
-            <ul>
-              {chat.messages?.map((message) => (
-                <li key={message.id}>
-                  <strong>{message.role}:</strong> {message.content}
-                </li>
-              ))}
-              {/* Show streaming message */}
-              {streamingMessage && (
-                <li>
-                  <strong>bot:</strong> {streamingMessage}
-                </li>
-              )}
-            </ul>
+          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <h1 className="text-xl font-bold mb-4">{chat.chat_title}</h1>
+
+            {chat.messages?.map((message) => (
+              <div
+                key={message.id}
+                className={`flex ${
+                  message.role === "user" ? "justify-end" : "justify-start"
+                }`}
+              >
+                <div
+                  className={`max-w-[70%] rounded-lg px-4 py-2 ${
+                    message.role === "user"
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  }`}
+                >
+                  <p className="text-sm">{message.content}</p>
+                </div>
+              </div>
+            ))}
+
+            {/* Streaming message */}
+            {streamingMessage && (
+              <div className="flex justify-start">
+                <div className="max-w-[70%] rounded-lg px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+                  <p className="text-sm">{streamingMessage}</p>
+                </div>
+              </div>
+            )}
           </div>
           <SendMessageInput onSend={handleSendMessage} />
         </main>
